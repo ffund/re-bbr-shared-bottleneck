@@ -14,3 +14,26 @@ specifically,
 
 :::
 
+::: {.cell .markdown}
+
+The following group of cells installs prerequisites for data analysis and visualization:
+
+:::
+
+::: {.cell .code}
+```python
+!pip install seaborn
+```
+:::
+
+
+::: {.cell .code}
+```python
+import time
+import pandas as pd
+from io import StringIO
+import seaborn as sns 
+import matplotlib.pyplot as plt
+```
+:::
+
