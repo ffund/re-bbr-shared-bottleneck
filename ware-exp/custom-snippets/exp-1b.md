@@ -19,7 +19,7 @@ import itertools
 exp_factors = { 
     'bufcap': [0.25, 0.5] + [2**n for n in range(8)],
     'duration': [240],
-    'loss_cc': ['cubic', 'reno']
+    'loss_cc': ['cubic', 'reno'],
     'trial': [1]
 }
 factor_names = [k for k in exp_factors]
@@ -31,33 +31,53 @@ exp_lists = [dict(zip(factor_names, factor_l)) for factor_l in factor_lists]
 
 ::: {.cell .code}
 ```python
-import time # to allow resume
+import time
+
+# make sure BBR is available
+sender_node.execute("sudo modprobe tcp_bbr")
+
 for exp in exp_lists:
     # set router buffer limit 
     router_node.execute("sudo tc qdisc replace dev " + router_egress_name + " parent 1:3 bfifo limit " + str(bdp_kbyte*exp['bufcap']) + "kb")
 
-    # make sure BBR is available
-    sender_node.execute("sudo modprobe tcp_bbr")
-
     # clean up
     receiver_node.execute("sudo killall iperf3")
-    receiver_node.execute("rm fig1c_bbr.txt")
-    receiver_node.execute("rm fig1c_cubic.txt")
+    sender_node.execute("sudo killall iperf3")
 
     # start an iperf3 receiver for the BBR flow
     receiver_node.execute_thread("iperf3 -s -1 -i 1 --logfile fig1b_bbr_" + str(exp['bufcap']) + "_bbrV" + exp['loss_cc'] + ".txt")
     # start an iperf3 receiver for the Cubic flows
-    receiver_node.execute_thread("iperf3 -s -1 -i 1 --logfile fig1b_" + exp['loss_cc'] + "_bbrV" + str(exp['bufcap']) + "_" + exp['loss_cc'] + ".txt -p 5301")
+    receiver_node.execute_thread("iperf3 -s -1 -i 1 --logfile fig1b_" + exp['loss_cc'] + "_" + str(exp['bufcap']) + "_bbrV" + exp['loss_cc'] + ".txt -p 5301")
 
     time.sleep(5) 
 
     # start an iperf3 sender for the BBR flow
-    sender_node.execute_thread("iperf3 -c receiver -fm -t " + exp['duration'] + " -C bbr ")
+    sender_node.execute_thread("iperf3 -c receiver -fm -t " + str(exp['duration']) + " -C bbr ")
     # start an iperf3 receiver for the Cubic flows
-    sender_node.execute_thread("iperf3 -c receiver -fm -t " + exp['duration'] + " -C " + exp['loss_cc'] + "-p 5301")
+    sender_node.execute_thread("iperf3 -c receiver -fm -t " + str(exp['duration']) + " -C " + exp['loss_cc'] + "-p 5301")
 
-    time.sleep(305)
+    time.sleep(exp['duration'] + 5)
 
 ```
 :::
 
+
+::: {.cell .code}
+```python
+df = pd.DataFrame(columns=['bufcap', 'combo', 'cc', 'goodput'])
+
+for exp in exp_lists:
+
+    bbr_file = "fig1b_bbr_" + str(exp['bufcap']) + "_bbrV" + exp['loss_cc'] + ".txt"
+    tput_bbr = receiver_node.execute("cat " + bbr_file + " | grep 'receiver' | awk -F '-' '{print $2}' | awk '{print $5}'", quiet=True)
+    df_dict = {'bufcap': exp['bufcap'], 'combo': "BBR-" + exp['loss_cc'], 'cc': 'BBR', 'goodput': float(tput_bbr[0].strip())}
+    df = pd.concat([df, pd.DataFrame(df_dict, index=[0])], ignore_index=True)
+
+
+    loss_file = "fig1b_" + exp['loss_cc'] + "_" + str(exp['bufcap']) + "_bbrV" + exp['loss_cc'] + ".txt"
+    tput_loss = receiver_node.execute("cat " + cubic_file + " | grep 'receiver' | awk -F '-' '{print $2}' | awk '{print $5}'", quiet=True)
+    df_dict = {'bufcap': exp['bufcap'], 'combo': "BBR-" + exp['loss_cc'], 'cc': exp['loss_cc'], 'goodput': float(tput_loss[0].strip())}
+    df = pd.concat([df, pd.DataFrame(df_dict, index=[0])], ignore_index=True)
+
+```
+:::

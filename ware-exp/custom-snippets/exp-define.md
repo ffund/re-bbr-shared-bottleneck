@@ -4,7 +4,7 @@
 
 ::: {.cell .code}
 ```python
-slice_name="ware" + fablib.get_bastion_username()
+slice_name="ware-" + fablib.get_bastion_username()
 
 node_conf = [
  {'name': "sender",    'cores': 2, 'ram': 4, 'disk': 10, 'image': 'default_ubuntu_22', 'packages': ['iperf3']}, 
