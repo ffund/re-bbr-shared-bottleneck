@@ -35,6 +35,7 @@ import time
 
 # make sure BBR is available
 sender_node.execute("sudo modprobe tcp_bbr")
+receiver_node.execute("sudo modprobe tcp_bbr")
 
 for exp in exp_lists:
     # set router buffer limit 
@@ -45,9 +46,9 @@ for exp in exp_lists:
     sender_node.execute("sudo killall iperf3")
 
     # start an iperf3 receiver for the BBR flow
-    receiver_node.execute_thread("iperf3 -s -1 -i 1 --logfile fig1b_bbr_" + str(exp['bufcap']) + "_bbrV" + exp['loss_cc'] + ".txt")
+    receiver_node.execute_thread("iperf3 -s -1 -i 1 -fm --logfile fig1b_bbr_" + str(exp['bufcap']) + "_bbrV" + exp['loss_cc'] + ".txt")
     # start an iperf3 receiver for the Cubic flows
-    receiver_node.execute_thread("iperf3 -s -1 -i 1 --logfile fig1b_" + exp['loss_cc'] + "_" + str(exp['bufcap']) + "_bbrV" + exp['loss_cc'] + ".txt -p 5301")
+    receiver_node.execute_thread("iperf3 -s -1 -i 1 -fm --logfile fig1b_" + exp['loss_cc'] + "_" + str(exp['bufcap']) + "_bbrV" + exp['loss_cc'] + ".txt -p 5301")
 
     time.sleep(5) 
 
@@ -75,9 +76,20 @@ for exp in exp_lists:
 
 
     loss_file = "fig1b_" + exp['loss_cc'] + "_" + str(exp['bufcap']) + "_bbrV" + exp['loss_cc'] + ".txt"
-    tput_loss = receiver_node.execute("cat " + cubic_file + " | grep 'receiver' | awk -F '-' '{print $2}' | awk '{print $5}'", quiet=True)
+    tput_loss = receiver_node.execute("cat " + loss_file + " | grep 'receiver' | awk -F '-' '{print $2}' | awk '{print $5}'", quiet=True)
     df_dict = {'bufcap': exp['bufcap'], 'combo': "BBR-" + exp['loss_cc'], 'cc': exp['loss_cc'], 'goodput': float(tput_loss[0].strip())}
     df = pd.concat([df, pd.DataFrame(df_dict, index=[0])], ignore_index=True)
 
+```
+:::
+
+
+::: {.cell .code}
+```python
+df['buf_str'] = df['bufcap'].astype(str)
+g = sns.FacetGrid(df, row="combo", legend_out=True, aspect=2);
+g = g.map(sns.lineplot, "buf_str", "goodput",  hue=df.cc);
+g.set_axis_labels("Buffer size (BDP)", "Goodput (Mbps)");
+plt.legend();
 ```
 :::

@@ -8,7 +8,7 @@ In this section, we configure the bottleneck link to have a 40Mbps capacity and 
 
 ::: {.cell .code}
 ```python
-exp = {'rtt': 10, 'bandwidth': 40 }
+exp = {'rtt': 40, 'bandwidth': 10 }
 bdp_kbyte = exp['rtt']*exp['bandwidth']/8
 
 router_node = slice.get_node("router")
@@ -51,5 +51,15 @@ import time
 _ = slice.get_node("receiver").execute("iperf3 -s -1 -D")
 time.sleep(5)
 _ = slice.get_node("sender").execute("iperf3 -t 30 -i 10 -P 10 -c receiver")
+```
+:::
+
+
+
+::: {.cell .code}
+```python
+# make sure each flow is a "fresh start"
+slice.get_node("sender").execute("sudo sysctl -w net.ipv4.tcp_no_metrics_save=1")
+slice.get_node("receiver").execute("sudo sysctl -w net.ipv4.tcp_no_metrics_save=1")
 ```
 :::

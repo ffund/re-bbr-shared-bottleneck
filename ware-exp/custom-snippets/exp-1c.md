@@ -20,6 +20,7 @@ router_node.execute("sudo tc qdisc replace dev " + router_egress_name + " parent
 
 # make sure BBR is available
 sender_node.execute("sudo modprobe tcp_bbr")
+receiver_node.execute("sudo modprobe tcp_bbr")
 
 # clean up
 receiver_node.execute("sudo killall iperf3")
@@ -27,9 +28,9 @@ receiver_node.execute("rm fig1c_bbr.txt")
 receiver_node.execute("rm fig1c_cubic.txt")
 
 # start an iperf3 receiver for the BBR flow
-receiver_node.execute_thread("iperf3 -s -1 -i 1 --logfile fig1c_bbr.txt")
+receiver_node.execute_thread("iperf3 -s -1 -i 1 -fm --logfile fig1c_bbr.txt")
 # start an iperf3 receiver for the Cubic flows
-receiver_node.execute_thread("iperf3 -s -1 -i 1 --logfile fig1c_cubic.txt -p 5301")
+receiver_node.execute_thread("iperf3 -s -1 -i 1 -fm --logfile fig1c_cubic.txt -p 5301")
 
 time.sleep(5) 
 
