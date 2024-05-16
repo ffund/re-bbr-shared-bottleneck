@@ -3,7 +3,7 @@
 """
 Created on Mon Mar 25 17:02:20 2024
 
-@author: fatihberkay
+@author: anon
 """
 
 # In this model, BBR is BBRv1. 
@@ -106,7 +106,7 @@ plt.ylim(0, q)
 plt.legend()
 
 # Save the file
-plt.savefig('/Users/fatihberkay/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure5_a_b_model', dpi=300)
+plt.savefig('~/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure5_a_b_model', dpi=300)
 plt.show()
 
 
@@ -203,7 +203,7 @@ plt.ylim(0, np.max(RTT_est_ms)+5)
 plt.legend()
 
 # Save the file 
-plt.savefig('/Users/fatihberkay/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure6_a_model', dpi=300)
+plt.savefig('~/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure6_a_model', dpi=300)
 
 # Show the plot
 plt.show()
@@ -221,7 +221,7 @@ plt.xlabel('Number of BBR flows')
 plt.ylabel('Inflight Cap (Kbytes)')
 plt.ylim(0, np.max(inflight_cap)+5)
 plt.legend()
-plt.savefig('/Users/fatihberkay/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure6_b_model', dpi=300)
+plt.savefig('~/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure6_b_model', dpi=300)
 plt.show()
 
 
@@ -316,7 +316,7 @@ plt.ylim(0, np.max(probe_time)+5)
 plt.legend()
 
 # Save the file 
-plt.savefig('/Users/fatihberkay/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure7_model', dpi=300)
+plt.savefig('~/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure7_model', dpi=300)
 
 # Show the plot
 plt.show()
@@ -389,7 +389,7 @@ plt.suptitle('40ms × 10 Mbps, vs 1 Cubic Flow')
 
 
 # Save the file 
-plt.savefig('/Users/fatihberkay/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure8_a_model', dpi=300)
+plt.savefig('~/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure8_a_model', dpi=300)
 
 # Show the plot
 plt.show()
@@ -428,7 +428,7 @@ plt.tight_layout()
 
 
 # Save the file 
-plt.savefig('/Users/fatihberkay/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure8_b_model', dpi=300)
+plt.savefig('~/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure8_b_model', dpi=300)
 
 # Show the plot
 plt.show()
@@ -466,7 +466,7 @@ plt.tight_layout()
 
 
 # Save the file 
-plt.savefig('/Users/fatihberkay/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure8_c_model', dpi=300)
+plt.savefig('~/Desktop/IMC2024/Project/Ware (2019) - model/Figures/Figure8_c_model', dpi=300)
 
 # Show the plot
 plt.show()
